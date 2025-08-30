@@ -30,11 +30,6 @@
 
 int main() {
 
-	printf(GREEN"Hello world\n"NORMAL);
-
-	printf("PRUEBA!\nPRUEBA!\n");
-
-	printf(GREEN"Hello world\n"NORMAL);
-	printf("Prueba\n");
+	// test de ramas
 	return 0;
 }
