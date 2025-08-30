@@ -31,6 +31,10 @@
 int main() {
 
 	printf(GREEN"Hello world\n"NORMAL);
-	printf("A\n");
+
+	printf("PRUEBA!\nPRUEBA!\n");
+
+	printf(GREEN"Hello world\n"NORMAL);
+	printf("Prueba\n");
 	return 0;
 }
