@@ -2,7 +2,7 @@
 	Desarrollar un programa computacional para el lenguaje regular que represente todas las cadenas escritas sobre el
 	alfabeto compuesto por todas las letras de tu(s) nombr(e) y apellidos. todas minusculas y sin acentos, asi como
 	los digitos que componenea tu matricula, ademas del punto y que cumplan con lo siguiente.
-		
+
 		1) Que el primer simbolo sea un digito.
 		2) Que tenga cualquier combinacion de letras y digitos intermedia, validos en el alfabeto.
 		3) Que la cadena contenga tus iniciales en forma consecutiva al menos una vez.
@@ -17,7 +17,7 @@
 
 	Nombre: yazmany jahaziel guerrero ceja
 	Matricula: 1339767
-	
+
 	El alfabeto es:
 	S = {y,a,z,m,n,j,h,i,e,l,g,u,r,o,c,1,3,9,7,6,.}
 
@@ -29,8 +29,8 @@
 #include "colores.h"
 
 int main() {
-	
-	printf(GREEN"Hello world\n"NORMAL);
 
+	printf(GREEN"Hello world\n"NORMAL);
+	printf("A\n");
 	return 0;
 }
