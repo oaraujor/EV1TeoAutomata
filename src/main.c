@@ -35,37 +35,29 @@ int main() {
 	NODO *cadena_nombre;
 	NODO *cadena_matricula;
 	NODO *cadena_usuario;
-	char c;
-	//NODO *alfabeto;
+	NODO *alfabeto;
 
 	//Inicializaciones
 	cadena_nombre = NULL;
 	cadena_matricula = NULL;
 	cadena_usuario = NULL;
-	//alfabeto = NULL; //linked list para representar el alfabeto
+	alfabeto = NULL; //linked list para representar el alfabeto
 	
 	LIMPIAR_PANTALLA;
 	//prompt usuario
 	leerCadena("Nombre: ", &cadena_nombre, LETRA); //la cadena de nombre es una linked list
 	leerCadena("Matricula: ", &cadena_matricula, NUMERO); //la cadena de matricula es una linked list
 	leerCadena("Cadena a analizar: ", &cadena_usuario, ALPHA_NUM); //la cadena a alnalizar es una linked list
-
-	//printCadena(&cadena_nombre);
-	//printCadena(&cadena_matricula);
-	//printCadena(&cadena_usuario);
-
-	/*
-	while (true) {
-		c = getchar();
-		if(buscarEnCadena(&cadena_nombre, c)){
-			printf("SI\n");
-		}
-		else {
-			printf("SI\n");
-		}
-	}
 	
-	*/
+	crearAlfabeto(&alfabeto, &cadena_nombre);
+	crearAlfabeto(&alfabeto, &cadena_matricula);
+	agregarACadena(&alfabeto, '.');
+
+	LIMPIAR_PANTALLA;
+	printCadena(&cadena_nombre);
+	printCadena(&cadena_matricula);
+	printAlfabeto(&alfabeto); 
+	
 
 	return 0;
 }

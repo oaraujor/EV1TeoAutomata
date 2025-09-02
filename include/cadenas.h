@@ -27,17 +27,16 @@ typedef enum tipoDato {
     NUMERO,
 } TIPODATO;
 
-
-//void crearAlfabeto();
-//void procesarCadenas();
 void agregarACadena(NODO ** , char );
+
+bool buscarEnCadena(NODO **, char );
+void crearAlfabeto(NODO **, NODO **);
 
 void deshacerCadena(NODO **);
 void leerCadena(const char *, NODO **, TIPODATO );
+
 void printCadena(NODO** );
-//bool buscarEnCadena(NODO **, char );
-
-
+void printAlfabeto(NODO** );
 
 void agregarACadena(NODO **cadena , char letra)
 {
@@ -61,27 +60,41 @@ void agregarACadena(NODO **cadena , char letra)
     }
 }
 
-void printCadena(NODO** list) {
+void printCadena(NODO** cadena) {
     NODO *curr;
-    curr = *list;
+    curr = *cadena;
     int i = 0;
     while(curr != NULL) {
-            printf("%c", curr->letra);
-            curr = curr->sig_letra;
-            i++;
+        printf("%c", curr->letra);
+        curr = curr->sig_letra;
+        i++;
     }
     printf("\n");
 }
 
-void deshacerCadena(NODO **list) {
+void printAlfabeto(NODO** cadena) {
+    NODO *curr;
+    curr = *cadena;
+    printf("S = {");
+    while(curr != NULL) {
+        printf("%c", curr->letra);
+        if (curr->sig_letra != NULL) {  // Si NO es el último elemento
+            printf(",");
+        }
+        curr = curr->sig_letra;
+    }
+    printf("}\n");
+}
+
+void deshacerCadena(NODO **cadena) {
     NODO *curr = NULL, *temp = NULL;
-    curr = *list;
+    curr = *cadena;
     while(curr != NULL) {
         temp = curr->sig_letra;
         free(curr);
         curr = temp;
     }
-    *list = NULL;
+    *cadena = NULL;
 }
 
 void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
@@ -92,7 +105,6 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     do {
         deshacerCadena(cadena);
         valido = true;
-        LIMPIAR_PANTALLA;
         printf("%s", msg);
 
         while ((c = getchar()) != '\n' && c != EOF) {
@@ -128,7 +140,7 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     } while (!valido || *cadena == NULL);
 }
 
-/*
+
 bool buscarEnCadena(NODO **cadena, char valorBuscar) {
     NODO *curr;
     bool encontrado = false;
@@ -139,16 +151,28 @@ bool buscarEnCadena(NODO **cadena, char valorBuscar) {
             if (curr->letra == valorBuscar){
                 encontrado = true;
             }
-            curr = curr->sig_letra;
+            else {
+                curr = curr->sig_letra;
+            }
         }
+    }
+    else {
+        encontrado = false;
     }
     return encontrado;
 }
 
-void crearAlfabeto(NODO **alfabeto, NODO **cadena){
+void crearAlfabeto(NODO **alfabeto, NODO **cadena) {
+    NODO *cadenaAnalizar;
+    cadenaAnalizar = *cadena;
 
+    while (cadenaAnalizar != NULL) { //iterar sobre la cadena nombre, o matricula
+        if (!buscarEnCadena(alfabeto, cadenaAnalizar->letra) && cadenaAnalizar->letra != ' ') { //si la letra de la cadena no esta en alfabeto
+            agregarACadena(alfabeto, cadenaAnalizar->letra);
+        }
+        cadenaAnalizar = cadenaAnalizar->sig_letra;
+    }
+    
 }
-
-*/
 
 #endif
