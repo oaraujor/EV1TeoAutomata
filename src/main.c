@@ -23,13 +23,49 @@
 
 	Una entrada valida: 1mnyjgccicyjgci.an3.1339767
 
-	Otra valida: 6611zzzraoll99yjgc3j1.1339767
+	Otra valida: 6 611zzzraoll99yjgc3j1 .1339767
 */
 
 #include "colores.h"
+#include "cadenas.h"
+
 
 int main() {
+	//Declaraciones
+	NODO *cadena_nombre;
+	NODO *cadena_matricula;
+	NODO *cadena_usuario;
+	char c;
+	//NODO *alfabeto;
 
-	// test de ramas
+	//Inicializaciones
+	cadena_nombre = NULL;
+	cadena_matricula = NULL;
+	cadena_usuario = NULL;
+	//alfabeto = NULL; //linked list para representar el alfabeto
+	
+	LIMPIAR_PANTALLA;
+	//prompt usuario
+	leerCadena("Nombre: ", &cadena_nombre, LETRA); //la cadena de nombre es una linked list
+	leerCadena("Matricula: ", &cadena_matricula, NUMERO); //la cadena de matricula es una linked list
+	leerCadena("Cadena a analizar: ", &cadena_usuario, ALPHA_NUM); //la cadena a alnalizar es una linked list
+
+	//printCadena(&cadena_nombre);
+	//printCadena(&cadena_matricula);
+	//printCadena(&cadena_usuario);
+
+	/*
+	while (true) {
+		c = getchar();
+		if(buscarEnCadena(&cadena_nombre, c)){
+			printf("SI\n");
+		}
+		else {
+			printf("SI\n");
+		}
+	}
+	
+	*/
+
 	return 0;
 }
