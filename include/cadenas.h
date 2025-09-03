@@ -23,8 +23,15 @@ typedef enum tipoDato {
 void crearAlfabeto(NODO **, const char *);
 void leerCadena(const char *, NODO **, TIPODATO );
 void printAlfabeto(NODO** );
+void crearIniciales(const char *, NODO **);
+
+//validaciones
 bool ch_cad_EnAlfa(NODO **, NODO **);
 bool ch_cad_primEsDig(NODO **);
+bool procesarCadena(NODO **, NODO **);
+bool ch_cad_inciales(NODO **, NODO **);
+
+
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -86,7 +93,6 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     } while (!valido || *cadena == NULL);
 }
 
-
 //crea el alfabeto (NODO* - lista encadenada), ningun elemento se repite de la cadena de entrada, ignora espacios
 void crearAlfabeto(NODO **alfabeto, const char *cadena) {
     const char *cadenaAnalizar;
@@ -145,15 +151,38 @@ bool ch_cad_ptoYmatric(NODO **alfabeto, NODO **cadena){
 
 
 }
+*/
 
-bool ch_cad_inciales(NODO **alfabeto, NODO **cadena){
-    bool valido;
-    return valido;
+void crearIniciales(const char *nombre, NODO **inciales){
+    const char *temp_nombreUsuario;
+    bool visto_espacio = false;
+    int i;
 
+    temp_nombreUsuario = nombre;
+    i = 0;
+
+    agregarACadena(inciales, *(temp_nombreUsuario + i));
+    while(*(temp_nombreUsuario + i) != '\0') {
+        if (visto_espacio == true) {
+            agregarACadena(inciales, *(temp_nombreUsuario + i));
+            visto_espacio = false;
+        }
+        if(*(temp_nombreUsuario + i) == ' ') {
+            visto_espacio = true;
+        }
+        i++;
+    }
 
 }
 
-*/
+bool ch_cad_inciales(NODO **cadena_usuario, NODO **iniciales){
+    bool valido;
+    
+    
+    
+    return valido;
+    }
+
 bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario) {
     //bool valido;
 
