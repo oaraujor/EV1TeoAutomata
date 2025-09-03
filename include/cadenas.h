@@ -24,8 +24,7 @@ void crearAlfabeto(NODO **, const char *);
 void leerCadena(const char *, NODO **, TIPODATO );
 void printAlfabeto(NODO** );
 bool ch_cad_EnAlfa(NODO **, NODO **);
-bool procesarCadena(NODO **, NODO **);
-
+bool ch_cad_primEsDig(NODO **);
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -41,7 +40,6 @@ void printAlfabeto(NODO** cadena) {
     }
     printf("}\n");
 }
-
 
 //funcion para leer la cadena de ingreso de stdin. y guardarla como cadena - (NODO * - lista encadenada) EVITA ERRORES!!
 void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
@@ -123,8 +121,17 @@ bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
     return valido;
 }
 
+bool ch_cad_primEsDig(NODO **cadena){
+    bool valido;
+    char cAnalizar;
+    
+    cAnalizar = (*cadena)->letra;
+    valido = (isdigit(cAnalizar));
+    
+    return valido;
+}
 
-
+/*
 bool ch_cad_ptsNoConsecu(NODO **alfabeto, NODO **cadena){
     bool valido;
     return valido;
@@ -146,14 +153,29 @@ bool ch_cad_inciales(NODO **alfabeto, NODO **cadena){
 
 }
 
-bool ch_cad_primEsDig(NODO **alfabeto, NODO **cadena){
-    bool valido;
-    return valido;
+*/
+bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario) {
+    //bool valido;
+
+    printf("Prueba checar que la cadena solo tenga del alfabeto\n");
+	if (ch_cad_EnAlfa(alfabeto, cadena_usuario)) {
+		printf("\tPASS - todos pertenecen al alfabeto\n");
+	}
+	else{
+		printf("\tNO\n");
+	}
+
+	printf("\n");
+
+	printf("Prueba checar que primer elemento sea numero\n");
+	if (ch_cad_primEsDig(cadena_usuario)) {
+		printf("\tPASS - primer elemento es numero\n");
+	}
+	else{
+		printf("\tNO\n");
+	}
+    //return valido;
 }
 
-bool procesarCadena(NODO **alfabeto, NODO **cadena) {
-    bool valido;
-    return valido;
-}
 
 #endif
