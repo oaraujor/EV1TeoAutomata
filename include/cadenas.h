@@ -28,10 +28,9 @@ void crearIniciales(const char *, NODO **);
 //validaciones
 bool ch_cad_EnAlfa(NODO **, NODO **);
 bool ch_cad_primEsDig(NODO **);
-bool procesarCadena(NODO **, NODO **);
-bool ch_cad_inciales(NODO **, NODO **);
-
-
+bool procesarCadena(NODO **, NODO **, NODO **);
+bool ch_cad_iniciales(NODO **, NODO **);
+bool ch_cad_ptsNoConsecu(NODO **);
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -137,14 +136,29 @@ bool ch_cad_primEsDig(NODO **cadena){
     return valido;
 }
 
-/*
-bool ch_cad_ptsNoConsecu(NODO **alfabeto, NODO **cadena){
-    bool valido;
-    return valido;
-
-
+bool ch_cad_ptsNoConsecu(NODO **cadena){
+    NODO *temp_cadena_usr;
+    temp_cadena_usr = *cadena;
+    char letra_actual;
+    bool pto_visto = false;
+    
+    while(temp_cadena_usr != NULL) {
+        letra_actual = temp_cadena_usr->letra;
+        if (letra_actual == '.') {
+            if (pto_visto){
+                return false;
+            }
+            pto_visto = true;
+        }
+        else {
+            pto_visto = false;
+        }
+        temp_cadena_usr = temp_cadena_usr->sig_letra;
+    }
+    return true;
 }
-
+    
+/*
 bool ch_cad_ptoYmatric(NODO **alfabeto, NODO **cadena){
     bool valido;
     return valido;
@@ -175,15 +189,24 @@ void crearIniciales(const char *nombre, NODO **inciales){
 
 }
 
-bool ch_cad_inciales(NODO **cadena_usuario, NODO **iniciales){
-    bool valido;
-    
-    
-    
-    return valido;
+bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
+    NODO *temp_cadena_usuario, *temp_iniciales;
+    temp_cadena_usuario = *cadena_usuario;
+    temp_iniciales = *iniciales;
+
+    while(temp_cadena_usuario != NULL) {
+        if (temp_iniciales != NULL && temp_iniciales->letra == temp_cadena_usuario->letra) {
+            temp_iniciales = temp_iniciales->sig_letra;
+        }
+        temp_cadena_usuario = temp_cadena_usuario->sig_letra;
+        if(temp_iniciales == NULL) {
+            return true;
+        }
+    }
+    return false;
     }
 
-bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario) {
+bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales) {
     //bool valido;
 
     printf("Prueba checar que la cadena solo tenga del alfabeto\n");
@@ -199,6 +222,24 @@ bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario) {
 	printf("Prueba checar que primer elemento sea numero\n");
 	if (ch_cad_primEsDig(cadena_usuario)) {
 		printf("\tPASS - primer elemento es numero\n");
+	}
+	else{
+		printf("\tNO\n");
+	}
+
+    printf("\n");
+
+	printf("Prueba checar que contenga iniciales\n");
+	if (ch_cad_iniciales(cadena_usuario, inciales)) {
+		printf("\tPASS - contiene inciales\n");
+	}
+	else{
+		printf("\tNO\n");
+	}
+
+    printf("Prueba checar puntos no consecutivos\n");
+	if (ch_cad_ptsNoConsecu(cadena_usuario)) {
+		printf("\tPASS - no contiene puntos consecutivos\n");
 	}
 	else{
 		printf("\tNO\n");
