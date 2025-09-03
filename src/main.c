@@ -23,7 +23,7 @@
 
 	Una entrada valida: 1mnyjgccicyjgci.an3.1339767
 
-	Otra valida: 6 611zzzraoll99yjgc3j1 .1339767
+	Otra valida: 6611zzzraoll99yjgc3j1.1339767
 */
 
 #include "colores.h"
@@ -32,31 +32,31 @@
 
 int main() {
 	//Declaraciones
-	NODO *cadena_nombre;
-	NODO *cadena_matricula;
 	NODO *cadena_usuario;
 	NODO *alfabeto;
+	const char * cadena_nombre = "octavio araujo rosales";;
+	const char * cadena_matricula = "2173394";
 
 	//Inicializaciones
-	cadena_nombre = NULL;
-	cadena_matricula = NULL;
-	cadena_usuario = NULL;
-	alfabeto = NULL; //linked list para representar el alfabeto
+	cadena_usuario = NULL; //cadena ingresada por el usuario como listas encadenadas
+	alfabeto = NULL; //alfabeto como listas encadenadas
+	
 	
 	LIMPIAR_PANTALLA;
 	//prompt usuario
-	leerCadena("Nombre: ", &cadena_nombre, LETRA); //la cadena de nombre es una linked list
-	leerCadena("Matricula: ", &cadena_matricula, NUMERO); //la cadena de matricula es una linked list
-	leerCadena("Cadena a analizar: ", &cadena_usuario, ALPHA_NUM); //la cadena a alnalizar es una linked list
+	printf("Nombre: %s\n", cadena_nombre);
+	printf("Matricula: %s\n\n", cadena_matricula);
 	
-	crearAlfabeto(&alfabeto, &cadena_nombre);
-	crearAlfabeto(&alfabeto, &cadena_matricula);
+	crearAlfabeto(&alfabeto, cadena_nombre);
+	crearAlfabeto(&alfabeto, cadena_matricula);
 	agregarACadena(&alfabeto, '.');
 
-	LIMPIAR_PANTALLA;
-	printCadena(&cadena_nombre);
-	printCadena(&cadena_matricula);
-	printAlfabeto(&alfabeto); 
+	printAlfabeto(&alfabeto);
+	printf("\n\n");
+	leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
+	printf("\n\n");
+	
+	printCadena(&cadena_usuario);
 	
 
 	return 0;

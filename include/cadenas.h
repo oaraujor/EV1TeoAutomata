@@ -14,30 +14,21 @@
 	#define LIMPIAR_PANTALLA system("clear")
 #endif 
 
-
+//NODO para las listas encadenandas
 typedef struct _nodo {
     char letra;
     struct _nodo *sig_letra;
     
 } NODO;
 
+//enum para diferenciar tipos de datos
 typedef enum tipoDato {
-    ALPHA_NUM,
+    TODO = 0,
     LETRA,
     NUMERO,
 } TIPODATO;
 
-void agregarACadena(NODO ** , char );
-
-bool buscarEnCadena(NODO **, char );
-void crearAlfabeto(NODO **, NODO **);
-
-void deshacerCadena(NODO **);
-void leerCadena(const char *, NODO **, TIPODATO );
-
-void printCadena(NODO** );
-void printAlfabeto(NODO** );
-
+//agrega NODO * a la cadena (NODO * - lista encadenanda) 
 void agregarACadena(NODO **cadena , char letra)
 {
     NODO *newNODE, *prevNODE, *currNODE;
@@ -60,6 +51,7 @@ void agregarACadena(NODO **cadena , char letra)
     }
 }
 
+//imprime la cadena (NODO * - lista encadenanda) 
 void printCadena(NODO** cadena) {
     NODO *curr;
     curr = *cadena;
@@ -72,6 +64,7 @@ void printCadena(NODO** cadena) {
     printf("\n");
 }
 
+//imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
     NODO *curr;
     curr = *cadena;
@@ -86,6 +79,7 @@ void printAlfabeto(NODO** cadena) {
     printf("}\n");
 }
 
+//colapsa/borra la cadena (NODO * - lista encadenanda) 
 void deshacerCadena(NODO **cadena) {
     NODO *curr = NULL, *temp = NULL;
     curr = *cadena;
@@ -97,10 +91,11 @@ void deshacerCadena(NODO **cadena) {
     *cadena = NULL;
 }
 
+//funcion para leer la cadena de ingreso de stdin. y guardarla como cadena - (NODO * - lista encadenada) EVITA ERRORES!!
 void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     char c;
     bool valido, aceptado;
-    char *msError;
+    //char *msError;
 
     do {
         deshacerCadena(cadena);
@@ -109,21 +104,22 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
 
         while ((c = getchar()) != '\n' && c != EOF) {
             aceptado = false;
-
             switch (tipoDeDato) {
-                case ALPHA_NUM:
+                case TODO:
                     aceptado = true;
                     break;
-                case LETRA:
-                    aceptado = (isalpha(c) || c == ' ');
-                    msError = "(Solo Letras y Espacios)";
+                default:
+                    
                     break;
-                case NUMERO:
-                    aceptado = (isdigit(c));
-                    msError = "(Solo Numeros)";
-                    break;
+                //case LETRA:
+                //    aceptado = (isalpha(c) || c == ' ');
+                //    msError = "(Solo Letras y Espacios)";
+                //    break;
+                //case NUMERO:
+                //    aceptado = (isdigit(c));
+                //    msError = "(Solo Numeros)";
+                //    break;
             }
-
             if (!aceptado) {
                 valido = false;
             }
@@ -132,15 +128,15 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
                 agregarACadena(cadena, c);
             }
         }
-        if (valido == false) {
-            LIMPIAR_PANTALLA;
-            printf("Cadena Invalida %s\n", msError);
-        }
+        //if (valido == false) {
+        //    LIMPIAR_PANTALLA;
+        //    printf("Cadena Invalida \n", );
+        //}
 
     } while (!valido || *cadena == NULL);
 }
 
-
+//buscamos en la cadena (NODO * - lista encadenada) si valor se encuentra en cadena
 bool buscarEnCadena(NODO **cadena, char valorBuscar) {
     NODO *curr;
     bool encontrado = false;
@@ -162,15 +158,19 @@ bool buscarEnCadena(NODO **cadena, char valorBuscar) {
     return encontrado;
 }
 
-void crearAlfabeto(NODO **alfabeto, NODO **cadena) {
-    NODO *cadenaAnalizar;
-    cadenaAnalizar = *cadena;
+//crea el alfabeto (NODO* - lista encadenada), ningun elemento se repite de la cadena de entrada, ignora espacios
+void crearAlfabeto(NODO **alfabeto, const char *cadena) {
+    const char *cadenaAnalizar;
+    cadenaAnalizar = cadena;
 
-    while (cadenaAnalizar != NULL) { //iterar sobre la cadena nombre, o matricula
-        if (!buscarEnCadena(alfabeto, cadenaAnalizar->letra) && cadenaAnalizar->letra != ' ') { //si la letra de la cadena no esta en alfabeto
-            agregarACadena(alfabeto, cadenaAnalizar->letra);
+    int i;
+
+    i = 0;
+    while (*(cadenaAnalizar + i) != '\0') { //iterar sobre la cadena
+        if (!buscarEnCadena(alfabeto, *(cadenaAnalizar + i)) && *(cadenaAnalizar + i) != ' ') {
+            agregarACadena(alfabeto, *(cadenaAnalizar + i));
         }
-        cadenaAnalizar = cadenaAnalizar->sig_letra;
+        i++;
     }
     
 }
