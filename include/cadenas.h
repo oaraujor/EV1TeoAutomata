@@ -3,23 +3,15 @@
 #define CADENAS
 
 #include <string.h>
-#include <stdio.h>
-#include <stdlib.h>
-#include <stdbool.h>
 #include <ctype.h>
+
+#include "listasEncadenadas.h"
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
 #else
 	#define LIMPIAR_PANTALLA system("clear")
-#endif 
-
-//NODO para las listas encadenandas
-typedef struct _nodo {
-    char letra;
-    struct _nodo *sig_letra;
-    
-} NODO;
+#endif
 
 //enum para diferenciar tipos de datos
 typedef enum tipoDato {
@@ -28,41 +20,12 @@ typedef enum tipoDato {
     NUMERO,
 } TIPODATO;
 
-//agrega NODO * a la cadena (NODO * - lista encadenanda) 
-void agregarACadena(NODO **cadena , char letra)
-{
-    NODO *newNODE, *prevNODE, *currNODE;
-    newNODE = malloc(sizeof(NODO));
-    if(newNODE != NULL) {
-        newNODE->letra = letra;
-        newNODE->sig_letra = NULL;
-        prevNODE = NULL;
-        currNODE = *cadena;
-        while(currNODE != NULL) {
-            prevNODE = currNODE;
-            currNODE = currNODE->sig_letra;
-        }
-        if (prevNODE == NULL) {
-            *cadena = newNODE;
-        }
-        else {
-            prevNODE->sig_letra = newNODE;
-        }
-    }
-}
+void crearAlfabeto(NODO **, const char *);
+void leerCadena(const char *, NODO **, TIPODATO );
+void printAlfabeto(NODO** );
+bool ch_cad_EnAlfa(NODO **, NODO **);
+bool procesarCadena(NODO **, NODO **);
 
-//imprime la cadena (NODO * - lista encadenanda) 
-void printCadena(NODO** cadena) {
-    NODO *curr;
-    curr = *cadena;
-    int i = 0;
-    while(curr != NULL) {
-        printf("%c", curr->letra);
-        curr = curr->sig_letra;
-        i++;
-    }
-    printf("\n");
-}
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -79,17 +42,6 @@ void printAlfabeto(NODO** cadena) {
     printf("}\n");
 }
 
-//colapsa/borra la cadena (NODO * - lista encadenanda) 
-void deshacerCadena(NODO **cadena) {
-    NODO *curr = NULL, *temp = NULL;
-    curr = *cadena;
-    while(curr != NULL) {
-        temp = curr->sig_letra;
-        free(curr);
-        curr = temp;
-    }
-    *cadena = NULL;
-}
 
 //funcion para leer la cadena de ingreso de stdin. y guardarla como cadena - (NODO * - lista encadenada) EVITA ERRORES!!
 void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
@@ -136,27 +88,6 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     } while (!valido || *cadena == NULL);
 }
 
-//buscamos en la cadena (NODO * - lista encadenada) si valor se encuentra en cadena
-bool buscarEnCadena(NODO **cadena, char valorBuscar) {
-    NODO *curr;
-    bool encontrado = false;
-
-    if (cadena != NULL) {
-        curr = *cadena;
-        while (curr != NULL && encontrado == false) {
-            if (curr->letra == valorBuscar){
-                encontrado = true;
-            }
-            else {
-                curr = curr->sig_letra;
-            }
-        }
-    }
-    else {
-        encontrado = false;
-    }
-    return encontrado;
-}
 
 //crea el alfabeto (NODO* - lista encadenada), ningun elemento se repite de la cadena de entrada, ignora espacios
 void crearAlfabeto(NODO **alfabeto, const char *cadena) {
@@ -173,6 +104,56 @@ void crearAlfabeto(NODO **alfabeto, const char *cadena) {
         i++;
     }
     
+}
+
+//checar que la cadena contenga simbolos del Alfabeto, si incluye otros, rechazar cadena
+bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
+    NODO *temp_cad;
+    bool valido;
+    
+    temp_cad = *cadena;
+    
+    valido = true;
+    while (valido && temp_cad != NULL) {
+        if (!buscarEnCadena(alfabeto, temp_cad->letra)) {
+            valido = false;
+        }
+        temp_cad = temp_cad->sig_letra;
+    }
+    return valido;
+}
+
+
+
+bool ch_cad_ptsNoConsecu(NODO **alfabeto, NODO **cadena){
+    bool valido;
+    return valido;
+
+
+}
+
+bool ch_cad_ptoYmatric(NODO **alfabeto, NODO **cadena){
+    bool valido;
+    return valido;
+
+
+}
+
+bool ch_cad_inciales(NODO **alfabeto, NODO **cadena){
+    bool valido;
+    return valido;
+
+
+}
+
+bool ch_cad_primEsDig(NODO **alfabeto, NODO **cadena){
+    bool valido;
+    return valido;
+}
+
+bool procesarCadena(NODO **alfabeto, NODO **cadena) {
+    bool valido;
+    return valido;
 }
 
 #endif
