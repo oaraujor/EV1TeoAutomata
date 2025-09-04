@@ -1,11 +1,38 @@
-//archivo cabecera para el proyecto
-#ifndef CADENAS
-#define CADENAS
+/*
+	Desarrollar un programa computacional para el lenguaje regular que represente todas las cadenas escritas sobre el
+	alfabeto compuesto por todas las letras de tu(s) nombr(e) y apellidos. todas minusculas y sin acentos, asi como
+	los digitos que componenea tu matricula, ademas del punto y que cumplan con lo siguiente.
 
+		1) Que el primer simbolo sea un digito.
+		2) Que tenga cualquier combinacion de letras y digitos intermedia, validos en el alfabeto.
+		3) Que la cadena contenga tus iniciales en forma consecutiva al menos una vez.
+		4) que la cadena contenga como ultimos simbolos un punto seguido de tu numero de matricula completo.
+		5) Que acepte puntos intermedios, pero no en forma consecuitiva.
+
+	El programa debe de ser capaz de tomar como entrada una cadena de caracteres y que como resultado indique si la
+	cadena es valida o no para el lenguaje regular. Ademas, debe dar la opcion de solicitar otra cadena de entrada para
+	analizar, hasta que ya no se quiera analizar mas cadenas.
+
+	Ejemplo de cadenas validas.
+
+	Nombre: yazmany jahaziel guerrero ceja
+	Matricula: 1339767
+
+	El alfabeto es:
+	S = {y,a,z,m,n,j,h,i,e,l,g,u,r,o,c,1,3,9,7,6,.}
+
+	Una entrada valida: 1mnyjgccicyjgci.an3.1339767
+
+	Otra valida: 6611zzzraoll99yjgc3j1.1339767
+*/
+
+#include <stdbool.h>
+#include <stdlib.h>
+#include <stdio.h>
 #include <string.h>
 #include <ctype.h>
 
-#include "listasEncadenadas.h"
+
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
@@ -13,12 +40,27 @@
 	#define LIMPIAR_PANTALLA system("clear")
 #endif
 
-//enum para diferenciar tipos de datos
+#define NORMAL "\033[0m"
+#define GREEN "\033[0;32m"
+#define RED "\033[0;31m"
+
+//NODO para las listas encadenandas
+typedef struct _nodo {
+    char letra;
+    struct _nodo *sig_letra;
+} NODO;
+
 typedef enum tipoDato {
     TODO = 0,
     LETRA,
     NUMERO,
 } TIPODATO;
+
+void agregarACadena(NODO ** , char );
+void printCadena(NODO** );
+bool buscarEnCadena(NODO **, char );
+void deshacerCadena(NODO **);
+size_t tamanoCadena(NODO **);
 
 void crearAlfabeto(NODO **, const char *);
 void leerCadena(const char *, NODO **, TIPODATO );
@@ -33,6 +75,157 @@ bool ch_cad_iniciales(NODO **, NODO **);
 bool ch_cad_ptsNoConsecu(NODO **);
 bool ch_cad_ptoYmatric(const char *, NODO **);
 
+bool continuarSiNO();
+
+int main() {
+	//Declaraciones
+	NODO *cadena_usuario;
+	NODO *alfabeto;
+	NODO *inciales;
+	const char * cadena_nombre = "octavio araujo rosales";
+	const char * cadena_matricula = "2173394";
+
+	//Inicializaciones
+	cadena_usuario = NULL; //cadena ingresada por el usuario como listas encadenadas
+	alfabeto = NULL; //alfabeto como listas encadenadas
+	inciales = NULL; //iniciales como listas encadenadas
+	
+	
+	crearAlfabeto(&alfabeto, cadena_nombre);
+	crearAlfabeto(&alfabeto, cadena_matricula);
+	crearIniciales(cadena_nombre, &inciales);
+	agregarACadena(&alfabeto, '.');
+	
+	//prompt usuario
+	do {
+		LIMPIAR_PANTALLA;
+		printf("Nombre: %s\n", cadena_nombre);
+		printf("Matricula: %s\n\n", cadena_matricula);
+
+		printAlfabeto(&alfabeto);
+		printf("\n");
+		leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
+		printf("\n");
+		
+		if(procesarCadena(&alfabeto, &cadena_usuario, &inciales, cadena_matricula)) {
+			printf(GREEN"Cadena Valida!\n"NORMAL);
+		}
+		else {
+			printf(RED"Cadena Invalida!\n"NORMAL);
+		}
+		printf("\n");
+	}while(continuarSiNO());
+
+	deshacerCadena(&alfabeto);
+	deshacerCadena(&cadena_usuario);
+	deshacerCadena(&inciales);
+	return 0;
+}
+
+bool continuarSiNO() {
+    char si_no;
+
+    while (true) {
+        printf("Validar otra cadena? (s/n): ");
+        
+        si_no = getchar();
+        while (getchar() != '\n'); // clear input buffer
+
+        switch (si_no) {
+            case 's':
+            case 'S':
+                return true;
+            case 'n':
+            case 'N':
+                return false;
+            default:
+				LIMPIAR_PANTALLA;
+                printf(RED"\rPor favor ingrese 's' o 'n'.\n"NORMAL);
+				break;
+        }
+    }
+}
+
+//agrega NODO * a la cadena (NODO * - lista encadenanda) 
+void agregarACadena(NODO **cadena , char letra) {
+    NODO *newNODE, *prevNODE, *currNODE;
+    newNODE = (NODO *)malloc(sizeof(NODO));
+    if(newNODE != NULL) {
+        newNODE->letra = letra;
+        newNODE->sig_letra = NULL;
+        prevNODE = NULL;
+        currNODE = *cadena;
+        while(currNODE != NULL) {
+            prevNODE = currNODE;
+            currNODE = currNODE->sig_letra;
+        }
+        if (prevNODE == NULL) {
+            *cadena = newNODE;
+        }
+        else {
+            prevNODE->sig_letra = newNODE;
+        }
+    }
+}
+
+//imprime la cadena (NODO * - lista encadenanda) 
+void printCadena(NODO** cadena) {
+    NODO *curr;
+    curr = *cadena;
+    int i = 0;
+    while(curr != NULL) {
+        printf("%c", curr->letra);
+        curr = curr->sig_letra;
+        i++;
+    }
+    printf("\n");
+}
+
+//buscamos en la cadena (NODO * - lista encadenada) si valor se encuentra en cadena
+bool buscarEnCadena(NODO **cadena, char valorBuscar) {
+    NODO *curr;
+    bool encontrado = false;
+
+    if (cadena != NULL) {
+        curr = *cadena;
+        while (curr != NULL && encontrado == false) {
+            if (curr->letra == valorBuscar){
+                encontrado = true;
+            }
+            else {
+                curr = curr->sig_letra;
+            }
+        }
+    }
+    else {
+        encontrado = false;
+    }
+    return encontrado;
+}
+
+//colapsa/borra la cadena (NODO * - lista encadenanda) 
+void deshacerCadena(NODO **cadena) {
+    NODO *curr = NULL, *temp = NULL;
+    curr = *cadena;
+    while(curr != NULL) {
+        temp = curr->sig_letra;
+        free(curr);
+        curr = temp;
+    }
+    *cadena = NULL;
+}
+
+size_t tamanoCadena(NODO **cadena) {
+    NODO * actual = NULL;
+    actual = *cadena;
+    size_t conteo = 0;
+
+    while (actual != NULL) {
+        conteo++;
+        actual = actual->sig_letra;
+    }
+    return conteo;
+}
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -187,6 +380,7 @@ bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
         tmp = tmp->sig_letra;
     }
 
+    // Check if current is '.'
     if (tmp->letra != '.')
         return false;
 
@@ -297,6 +491,3 @@ bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales, con
         return false;
     }
 }
-
-
-#endif

@@ -29,35 +29,71 @@
 #include "colores.h"
 #include "cadenas.h"
 
+bool continuarSiNO();
+
 
 int main() {
 	//Declaraciones
 	NODO *cadena_usuario;
 	NODO *alfabeto;
-	const char * cadena_nombre = "octavio araujo rosales";;
+	NODO *inciales;
+	const char * cadena_nombre = "octavio araujo rosales";
 	const char * cadena_matricula = "2173394";
 
 	//Inicializaciones
 	cadena_usuario = NULL; //cadena ingresada por el usuario como listas encadenadas
 	alfabeto = NULL; //alfabeto como listas encadenadas
+	inciales = NULL; //iniciales como listas encadenadas
 	
-	
-	LIMPIAR_PANTALLA;
-	//prompt usuario
-	printf("Nombre: %s\n", cadena_nombre);
-	printf("Matricula: %s\n\n", cadena_matricula);
 	
 	crearAlfabeto(&alfabeto, cadena_nombre);
 	crearAlfabeto(&alfabeto, cadena_matricula);
+	crearIniciales(cadena_nombre, &inciales);
 	agregarACadena(&alfabeto, '.');
+	
+	//prompt usuario
+	do {
+		LIMPIAR_PANTALLA;
+		printf("Nombre: %s\n", cadena_nombre);
+		printf("Matricula: %s\n\n", cadena_matricula);
 
-	printAlfabeto(&alfabeto);
-	printf("\n\n");
-	leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
-	printf("\n\n");
-	
-	printCadena(&cadena_usuario);
-	
+		printAlfabeto(&alfabeto);
+		printf("\n");
+		leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
+		printf("\n\n");
+		
+		if(procesarCadena(&alfabeto, &cadena_usuario, &inciales, cadena_matricula)) {
+			printf(GREEN"Cadena Valida!\n"NORMAL);
+		}
+		else {
+			printf(RED"Cadena Invalida!\n"NORMAL);
+		}
+
+	}while(continuarSiNO());
 
 	return 0;
+}
+
+bool continuarSiNO() {
+    char si_no;
+
+    while (true) {
+        printf("Continuar? (s/n): ");
+        
+        si_no = getchar();
+        while (getchar() != '\n'); // clear input buffer
+
+        switch (si_no) {
+            case 's':
+            case 'S':
+                return true;
+            case 'n':
+            case 'N':
+                return false;
+            default:
+				LIMPIAR_PANTALLA;
+                printf(RED"\rPor favor ingrese 's' o 'n'.\n"NORMAL);
+				break;
+        }
+    }
 }
