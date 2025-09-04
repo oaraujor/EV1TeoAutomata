@@ -28,9 +28,11 @@ void crearIniciales(const char *, NODO **);
 //validaciones
 bool ch_cad_EnAlfa(NODO **, NODO **);
 bool ch_cad_primEsDig(NODO **);
-bool procesarCadena(NODO **, NODO **, NODO **);
+bool procesarCadena(NODO **, NODO **, NODO **, const char*);
 bool ch_cad_iniciales(NODO **, NODO **);
 bool ch_cad_ptsNoConsecu(NODO **);
+bool ch_cad_ptoYmatric(const char *, NODO **);
+
 
 //imprime el alfaberto (NODO * - lista encadenada)
 void printAlfabeto(NODO** cadena) {
@@ -126,6 +128,7 @@ bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
     return valido;
 }
 
+//checar que la cadena inicie con un digito (numero)
 bool ch_cad_primEsDig(NODO **cadena){
     bool valido;
     char cAnalizar;
@@ -136,6 +139,7 @@ bool ch_cad_primEsDig(NODO **cadena){
     return valido;
 }
 
+//checar que la cadena no contenga puntos consecutivos
 bool ch_cad_ptsNoConsecu(NODO **cadena){
     NODO *temp_cadena_usr;
     temp_cadena_usr = *cadena;
@@ -158,15 +162,51 @@ bool ch_cad_ptsNoConsecu(NODO **cadena){
     return true;
 }
     
-/*
-bool ch_cad_ptoYmatric(NODO **alfabeto, NODO **cadena){
-    bool valido;
-    return valido;
+//checar que la cadena termine con punto y matricula
+bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
+    int list_len, mat_len;
+    NODO * tmp;
 
+    if (!matricula || !cadena_usuario || !(*cadena_usuario))
+        return false;
 
+    mat_len = strlen(matricula);
+
+    // First, count the length of the linked list
+    list_len = 0;
+    tmp = *cadena_usuario;
+    while (tmp) {
+        list_len++;
+        tmp = tmp->sig_letra;
+    }
+
+    // The ending must be '.' + matricula => (mat_len + 1) characters
+    if (list_len < mat_len + 1)
+        return false;
+
+    // Move pointer to the (list_len - (mat_len + 1))th node
+    tmp = *cadena_usuario;
+    for (int i = 0; i < list_len - (mat_len + 1); i++) {
+        tmp = tmp->sig_letra;
+    }
+
+    // Check if current is '.'
+    if (tmp->letra != '.')
+        return false;
+
+    // Move to next and compare with matricula
+    tmp = tmp->sig_letra;
+    for (int i = 0; i < mat_len; i++) {
+        if (!tmp || tmp->letra != matricula[i])
+            return false;
+        tmp = tmp->sig_letra;
+    }
+
+    // All matched, return true
+    return true;
 }
-*/
 
+//funcion para crear iniciales apartir del nombre estatico
 void crearIniciales(const char *nombre, NODO **inciales){
     const char *temp_nombreUsuario;
     bool visto_espacio = false;
@@ -189,6 +229,7 @@ void crearIniciales(const char *nombre, NODO **inciales){
 
 }
 
+//checar que la cadena contenga las iniciales al menos 1 vez
 bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
     NODO *temp_cadena_usuario, *temp_iniciales;
     temp_cadena_usuario = *cadena_usuario;
@@ -206,7 +247,8 @@ bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
     return false;
     }
 
-bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales) {
+//funcion tipo botella para encapsular dif componentes de la cadena haciendolas validas o no 
+bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales, const char* matricula) {
     //bool valido;
 
     printf("Prueba checar que la cadena solo tenga del alfabeto\n");
@@ -244,6 +286,23 @@ bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales) {
 	else{
 		printf("\tNO\n");
 	}
+
+    printf("Prueba checar punto y matricula final\n");
+	if (ch_cad_ptoYmatric(matricula, cadena_usuario)) {
+		printf("\tPASS - tiene .matricula\n");
+	}
+	else{
+		printf("\tNO\n");
+	}
+
+
+    if (ch_cad_EnAlfa(alfabeto, cadena_usuario) && ch_cad_primEsDig(cadena_usuario) &&
+        ch_cad_iniciales(cadena_usuario, inciales) && ch_cad_ptsNoConsecu(cadena_usuario) && ch_cad_ptoYmatric(matricula, cadena_usuario)) {
+            return true;
+    }
+    else {
+        return false;
+    }
     //return valido;
 }
 
