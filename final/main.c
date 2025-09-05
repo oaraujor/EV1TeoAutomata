@@ -32,8 +32,6 @@
 #include <string.h>
 #include <ctype.h>
 
-
-
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
 #else
@@ -61,12 +59,10 @@ void printCadena(NODO** );
 bool buscarEnCadena(NODO **, char );
 void deshacerCadena(NODO **);
 size_t tamanoCadena(NODO **);
-
 void crearAlfabeto(NODO **, const char *);
 void leerCadena(const char *, NODO **, TIPODATO );
 void printAlfabeto(NODO** );
 void crearIniciales(const char *, NODO **);
-
 //validaciones
 bool ch_cad_EnAlfa(NODO **, NODO **);
 bool ch_cad_primEsDig(NODO **);
@@ -74,7 +70,6 @@ bool procesarCadena(NODO **, NODO **, NODO **, const char*);
 bool ch_cad_iniciales(NODO **, NODO **);
 bool ch_cad_ptsNoConsecu(NODO **);
 bool ch_cad_ptoYmatric(const char *, NODO **);
-
 bool continuarSiNO();
 
 int main() {
@@ -90,7 +85,6 @@ int main() {
 	alfabeto = NULL; //alfabeto como listas encadenadas
 	inciales = NULL; //iniciales como listas encadenadas
 	
-	
 	crearAlfabeto(&alfabeto, cadena_nombre);
 	crearAlfabeto(&alfabeto, cadena_matricula);
 	crearIniciales(cadena_nombre, &inciales);
@@ -101,7 +95,6 @@ int main() {
 		LIMPIAR_PANTALLA;
 		printf("Nombre: %s\n", cadena_nombre);
 		printf("Matricula: %s\n\n", cadena_matricula);
-
 		printAlfabeto(&alfabeto);
 		printf("\n");
 		leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
@@ -231,6 +224,7 @@ size_t tamanoCadena(NODO **cadena) {
 void printAlfabeto(NODO** cadena) {
     NODO *curr;
     curr = *cadena;
+	
     printf("S = {");
     while(curr != NULL) {
         printf("%c", curr->letra);
@@ -246,8 +240,7 @@ void printAlfabeto(NODO** cadena) {
 void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
     char c;
     bool valido, aceptado;
-    //char *msError;
-
+	
     do {
         deshacerCadena(cadena);
         valido = true;
@@ -260,16 +253,7 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
                     aceptado = true;
                     break;
                 default:
-                    
                     break;
-                //case LETRA:
-                //    aceptado = (isalpha(c) || c == ' ');
-                //    msError = "(Solo Letras y Espacios)";
-                //    break;
-                //case NUMERO:
-                //    aceptado = (isdigit(c));
-                //    msError = "(Solo Numeros)";
-                //    break;
             }
             if (!aceptado) {
                 valido = false;
@@ -279,11 +263,6 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
                 agregarACadena(cadena, c);
             }
         }
-        //if (valido == false) {
-        //    LIMPIAR_PANTALLA;
-        //    printf("Cadena Invalida \n", );
-        //}
-
     } while (!valido || *cadena == NULL);
 }
 
@@ -291,7 +270,6 @@ void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
 void crearAlfabeto(NODO **alfabeto, const char *cadena) {
     const char *cadenaAnalizar;
     cadenaAnalizar = cadena;
-
     int i;
 
     i = 0;
@@ -310,7 +288,6 @@ bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
     bool valido;
     
     temp_cad = *cadena;
-    
     valido = true;
     while (valido && temp_cad != NULL) {
         if (!buscarEnCadena(alfabeto, temp_cad->letra)) {
@@ -364,7 +341,6 @@ bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
         return false;
 
     mat_len = strlen(matricula);
-
     list_len = 0;
     tmp = *cadena_usuario;
     while (tmp) {
@@ -379,8 +355,7 @@ bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
     for (int i = 0; i < list_len - (mat_len + 1); i++) {
         tmp = tmp->sig_letra;
     }
-
-    // Check if current is '.'
+	
     if (tmp->letra != '.')
         return false;
 
@@ -390,7 +365,6 @@ bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
             return false;
         tmp = tmp->sig_letra;
     }
-
     return true;
 }
 
@@ -401,9 +375,8 @@ void crearIniciales(const char *nombre, NODO **inciales){
     int i;
 
     temp_nombreUsuario = nombre;
-    i = 0;
-
     agregarACadena(inciales, *(temp_nombreUsuario + i));
+	i = 0;
     while(*(temp_nombreUsuario + i) != '\0') {
         if (visto_espacio == true) {
             agregarACadena(inciales, *(temp_nombreUsuario + i));
@@ -437,52 +410,6 @@ bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
 
 //funcion tipo botella para encapsular dif componentes de la cadena haciendolas validas o no 
 bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales, const char* matricula) {
-    /*
-    printf("Prueba checar que la cadena solo tenga del alfabeto\n");
-	if (ch_cad_EnAlfa(alfabeto, cadena_usuario)) {
-		printf("\tPASS - todos pertenecen al alfabeto\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-	printf("\n");
-
-	printf("Prueba checar que primer elemento sea numero\n");
-	if (ch_cad_primEsDig(cadena_usuario)) {
-		printf("\tPASS - primer elemento es numero\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("\n");
-
-	printf("Prueba checar que contenga iniciales\n");
-	if (ch_cad_iniciales(cadena_usuario, inciales)) {
-		printf("\tPASS - contiene inciales\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("Prueba checar puntos no consecutivos\n");
-	if (ch_cad_ptsNoConsecu(cadena_usuario)) {
-		printf("\tPASS - no contiene puntos consecutivos\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("Prueba checar punto y matricula final\n");
-	if (ch_cad_ptoYmatric(matricula, cadena_usuario)) {
-		printf("\tPASS - tiene .matricula\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    */
     if (ch_cad_EnAlfa(alfabeto, cadena_usuario) && ch_cad_primEsDig(cadena_usuario) &&
         ch_cad_iniciales(cadena_usuario, inciales) && ch_cad_ptsNoConsecu(cadena_usuario) && ch_cad_ptoYmatric(matricula, cadena_usuario)) {
             return true;
