@@ -26,11 +26,10 @@
 	Otra valida: 6611zzzraoll99yjgc3j1.1339767
 */
 
-#include "colores.h"
-#include "cadenas.h"
+#include "t_colors.h"
+#include "eval_str.h"
 
 bool continuarSiNO();
-
 
 int main() {
 	//Declaraciones
@@ -71,6 +70,9 @@ int main() {
 
 	}while(continuarSiNO());
 
+	deshacerCadena(&cadena_usuario);
+	deshacerCadena(&alfabeto);
+	deshacerCadena(&inciales);
 	return 0;
 }
 

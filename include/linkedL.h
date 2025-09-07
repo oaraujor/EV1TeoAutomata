@@ -1,5 +1,5 @@
-#ifndef LISTASCAD
-#define LISTASCAD
+#ifndef LNKD_LST
+#define LNKD_LST
 
 #include <stdbool.h>
 #include <stdlib.h>
