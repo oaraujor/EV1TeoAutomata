@@ -1,11 +1,11 @@
 //archivo cabecera para el proyecto
-#ifndef EVAL_STR
-#define EVAL_STR
+#ifndef CADENAS
+#define CADENAS
 
 #include <string.h>
 #include <ctype.h>
 
-#include "linkedL.h"
+#include "listasEncadenadas.h"
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
