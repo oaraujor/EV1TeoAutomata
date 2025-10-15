@@ -1,29 +1,31 @@
 /*
-	Desarrollar un programa computacional para el lenguaje regular que represente todas las cadenas escritas sobre el
-	alfabeto compuesto por todas las letras de tu(s) nombr(e) y apellidos. todas minusculas y sin acentos, asi como
-	los digitos que componenea tu matricula, ademas del punto y que cumplan con lo siguiente.
+	Obtener lo que se solicita a continuación: 
+	Con tu número de matrícula y tu nombre, desarrolla una gramática y un programa 
+	computacional para el lenguaje independiente del contexto dado, que sea capaz de tomar 
+	una cadena de palabras y que como resultado indique si la cadena es válida o no para dicha
+	gramática. Además, debe dar la opción de solicitar otra cadena de entrada para analizar, 
+	hasta que ya no se quiera analizar más cadenas. 
 
-		1) Que el primer simbolo sea un digito.
-		2) Que tenga cualquier combinacion de letras y digitos intermedia, validos en el alfabeto.
-		3) Que la cadena contenga tus iniciales en forma consecutiva al menos una vez.
-		4) que la cadena contenga como ultimos simbolos un punto seguido de tu numero de matricula completo.
-		5) Que acepte puntos intermedios, pero no en forma consecuitiva.
+	L = { i (w)^n i (w^I)^(2n) j^2 }
+	
+		DONDE:
+			w = las iniciales de tus apellidos,
+			i = todos los dígitos de tu número de matrícula,
+			w^I = w inversa,
+			j = tu primer nombre,
+			n≥ 1, n no debe leerse 
+	
+	(Sólo usar letras minúsculas sin acentos) 
 
-	El programa debe de ser capaz de tomar como entrada una cadena de caracteres y que como resultado indique si la
-	cadena es valida o no para el lenguaje regular. Ademas, debe dar la opcion de solicitar otra cadena de entrada para
-	analizar, hasta que ya no se quiera analizar mas cadenas.
-
-	Ejemplo de cadenas validas.
-
-	Nombre: yazmany jahaziel guerrero ceja
-	Matricula: 1339767
-
-	El alfabeto es:
-	S = {y,a,z,m,n,j,h,i,e,l,g,u,r,o,c,1,3,9,7,6,.}
-
-	Una entrada valida: 1mnyjgccicyjgci.an3.1339767
-
-	Otra valida: 6611zzzraoll99yjgc3j1.1339767
+	Ejemplo: Si tu matrícula es 0123456 y tu nombre es Yozedh Jahday Guerrero Ceja 
+		Entonces,
+			w = gc
+			i = 0123456 
+			wI = cg 
+			j = yozedh 
+	Algunas cadenas válidas para el lenguaje dado son: 
+		0123456gc0123456cgcgyozedhyozedh 
+		0123456gcgc0123456cgcgcgcgyozedhyozedh 
 */
 
 #include "t_colors.h"
@@ -32,36 +34,48 @@
 bool continuarSiNO();
 
 int main() {
-	//Declaraciones
-	NODO *cadena_usuario;
-	NODO *alfabeto;
-	NODO *inciales;
-	const char * cadena_nombre = "octavio araujo rosales";
-	const char * cadena_matricula = "2173394";
+	NODO *cadena_ingresada_usr;
+	NODO *gramatica_sigma;
+	NODO *gramatica_W;
+	NODO *gramatica_WI;
+	const char * charPtr_gramatica_j = "octavio";
+	const char * cadena_apellidos = "araujo rosales";
+	const char * charPtr_gramatica_i = "2173394";
 
-	//Inicializaciones
-	cadena_usuario = NULL; //cadena ingresada por el usuario como listas encadenadas
-	alfabeto = NULL; //alfabeto como listas encadenadas
-	inciales = NULL; //iniciales como listas encadenadas
+	cadena_ingresada_usr = NULL; //cadena ingresada por el usuario como listas encadenadas
+	gramatica_sigma = NULL; //gramatica_sigma como listas encadenadas
+	gramatica_W = NULL; //iniciales como listas encadenadas
+	gramatica_WI = NULL; //iniciales como listas encadenadas
 	
+	crearAlfabeto(&gramatica_sigma, charPtr_gramatica_j);
+	crearAlfabeto(&gramatica_sigma, cadena_apellidos);
+	crearAlfabeto(&gramatica_sigma, charPtr_gramatica_i);
+	crearIniciales(cadena_apellidos, &gramatica_W);
+	crearIniciales(cadena_apellidos, &gramatica_WI);
+	voltearCadena(&gramatica_WI);
 	
-	crearAlfabeto(&alfabeto, cadena_nombre);
-	crearAlfabeto(&alfabeto, cadena_matricula);
-	crearIniciales(cadena_nombre, &inciales);
-	agregarACadena(&alfabeto, '.');
-	
-	//prompt usuario
 	do {
 		LIMPIAR_PANTALLA;
-		printf("Nombre: %s\n", cadena_nombre);
-		printf("Matricula: %s\n\n", cadena_matricula);
+		printf("Nombre: %s ", charPtr_gramatica_j);
+		printf("%s\n", cadena_apellidos);
+		printf("Matricula: %s\n\n", charPtr_gramatica_i);
+		printAlfabeto(&gramatica_sigma);
+		
+		printf("w = ");
+		printCadena(&gramatica_W);
+		
+		printf("i = %s\n", charPtr_gramatica_i);
+		
+		printf("w^I = ");
+		printCadena(&gramatica_WI);
+		
+		printf("j = %s\n", cadena_apellidos);
 
-		printAlfabeto(&alfabeto);
 		printf("\n");
-		leerCadena("Cadena a analizar: ", &cadena_usuario, TODO); //la cadena a analizar es una linked list
+		leer_cadena_usr("Cadena a analizar: ", &cadena_ingresada_usr); //la cadena a analizar es una linked list
 		printf("\n\n");
 		
-		if(procesarCadena(&alfabeto, &cadena_usuario, &inciales, cadena_matricula)) {
+		if(procesarCadena(&gramatica_sigma, &cadena_ingresada_usr, &gramatica_W, charPtr_gramatica_i)) {
 			printf(GREEN"Cadena Valida!\n"NORMAL);
 		}
 		else {
@@ -70,9 +84,9 @@ int main() {
 
 	}while(continuarSiNO());
 
-	deshacerCadena(&cadena_usuario);
-	deshacerCadena(&alfabeto);
-	deshacerCadena(&inciales);
+	deshacerCadena(&cadena_ingresada_usr);
+	deshacerCadena(&gramatica_sigma);
+	deshacerCadena(&gramatica_W);
 	return 0;
 }
 

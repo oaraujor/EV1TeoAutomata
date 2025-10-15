@@ -13,19 +13,11 @@
 	#define LIMPIAR_PANTALLA system("clear")
 #endif
 
-//enum para diferenciar tipos de datos
-typedef enum tipoDato {
-    TODO = 0,
-    LETRA,
-    NUMERO,
-} TIPODATO;
-
 void crearAlfabeto(NODO **, const char *);
-void leerCadena(const char *, NODO **, TIPODATO );
+void leer_cadena_usr(const char *, NODO **);
 void printAlfabeto(NODO** );
 void crearIniciales(const char *, NODO **);
 
-//validaciones
 bool ch_cad_EnAlfa(NODO **, NODO **);
 bool ch_cad_primEsDig(NODO **);
 bool procesarCadena(NODO **, NODO **, NODO **, const char*);
@@ -33,15 +25,14 @@ bool ch_cad_iniciales(NODO **, NODO **);
 bool ch_cad_ptsNoConsecu(NODO **);
 bool ch_cad_ptoYmatric(const char *, NODO **);
 
-
-//imprime el alfaberto (NODO * - lista encadenada)
-void printAlfabeto(NODO** cadena) {
+void
+printAlfabeto(NODO** cadena) {
     NODO *curr;
     curr = *cadena;
-    printf("S = {");
+    printf("SIGMA = {");
     while(curr != NULL) {
         printf("%c", curr->letra);
-        if (curr->sig_letra != NULL) {  // Si NO es el último elemento
+        if (curr->sig_letra != NULL) {
             printf(",");
         }
         curr = curr->sig_letra;
@@ -49,61 +40,33 @@ void printAlfabeto(NODO** cadena) {
     printf("}\n");
 }
 
-//funcion para leer la cadena de ingreso de stdin. y guardarla como cadena - (NODO * - lista encadenada) EVITA ERRORES!!
-void leerCadena(const char *msg, NODO **cadena, TIPODATO tipoDeDato) {
+void
+leer_cadena_usr(const char *msg, NODO **cadena) {
     char c;
-    bool valido, aceptado;
-    //char *msError;
 
     do {
         deshacerCadena(cadena);
-        valido = true;
         printf("%s", msg);
 
         while ((c = getchar()) != '\n' && c != EOF) {
-            aceptado = false;
-            switch (tipoDeDato) {
-                case TODO:
-                    aceptado = true;
-                    break;
-                default:
-                    
-                    break;
-                //case LETRA:
-                //    aceptado = (isalpha(c) || c == ' ');
-                //    msError = "(Solo Letras y Espacios)";
-                //    break;
-                //case NUMERO:
-                //    aceptado = (isdigit(c));
-                //    msError = "(Solo Numeros)";
-                //    break;
-            }
-            if (!aceptado) {
-                valido = false;
-            }
-            else {
-                c = tolower(c);
-                agregarACadena(cadena, c);
-            }
+            c = tolower(c);
+            agregarACadena(cadena, c);
         }
-        //if (valido == false) {
-        //    LIMPIAR_PANTALLA;
-        //    printf("Cadena Invalida \n", );
-        //}
 
-    } while (!valido || *cadena == NULL);
+    } while(*cadena == NULL);
 }
 
-//crea el alfabeto (NODO* - lista encadenada), ningun elemento se repite de la cadena de entrada, ignora espacios
-void crearAlfabeto(NODO **alfabeto, const char *cadena) {
+void
+crearAlfabeto(NODO **alfabeto, const char *cadena) {
     const char *cadenaAnalizar;
-    cadenaAnalizar = cadena;
-
     int i;
 
+    cadenaAnalizar = cadena;
+
     i = 0;
-    while (*(cadenaAnalizar + i) != '\0') { //iterar sobre la cadena
-        if (!buscarEnCadena(alfabeto, *(cadenaAnalizar + i)) && *(cadenaAnalizar + i) != ' ') {
+    while (*(cadenaAnalizar + i) != '\0') {
+        if (!buscarEnCadena(alfabeto, *(cadenaAnalizar + i)) &&
+                *(cadenaAnalizar + i) != ' ') {
             agregarACadena(alfabeto, *(cadenaAnalizar + i));
         }
         i++;
@@ -111,8 +74,8 @@ void crearAlfabeto(NODO **alfabeto, const char *cadena) {
     
 }
 
-//checar que la cadena contenga simbolos del Alfabeto, si incluye otros, rechazar cadena
-bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
+bool
+ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
     NODO *temp_cad;
     bool valido;
     
@@ -128,8 +91,8 @@ bool ch_cad_EnAlfa(NODO **alfabeto, NODO **cadena) {
     return valido;
 }
 
-//checar que la cadena inicie con un digito (numero)
-bool ch_cad_primEsDig(NODO **cadena){
+bool
+ch_cad_primEsDig(NODO **cadena){
     bool valido;
     char cAnalizar;
     
@@ -139,8 +102,8 @@ bool ch_cad_primEsDig(NODO **cadena){
     return valido;
 }
 
-//checar que la cadena no contenga puntos consecutivos
-bool ch_cad_ptsNoConsecu(NODO **cadena){
+bool
+ch_cad_ptsNoConsecu(NODO **cadena){
     NODO *temp_cadena_usr;
     temp_cadena_usr = *cadena;
     char letra_actual;
@@ -162,8 +125,8 @@ bool ch_cad_ptsNoConsecu(NODO **cadena){
     return true;
 }
     
-//checar que la cadena termine con punto y matricula
-bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
+bool
+ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
     int list_len, mat_len;
     NODO * tmp;
 
@@ -200,8 +163,8 @@ bool ch_cad_ptoYmatric(const char *matricula, NODO **cadena_usuario) {
     return true;
 }
 
-//funcion para crear iniciales apartir del nombre estatico
-void crearIniciales(const char *nombre, NODO **inciales){
+void
+crearIniciales(const char *nombre, NODO **inciales){
     const char *temp_nombreUsuario;
     bool visto_espacio = false;
     int i;
@@ -220,11 +183,10 @@ void crearIniciales(const char *nombre, NODO **inciales){
         }
         i++;
     }
-
 }
 
-//checar que la cadena contenga las iniciales al menos 1 vez
-bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
+bool
+ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
     NODO *temp_cadena_usuario, *temp_iniciales;
     temp_cadena_usuario = *cadena_usuario;
     temp_iniciales = *iniciales;
@@ -241,56 +203,13 @@ bool ch_cad_iniciales(NODO **cadena_usuario, NODO **iniciales){
     return false;
     }
 
-//funcion tipo botella para encapsular dif componentes de la cadena haciendolas validas o no 
-bool procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales, const char* matricula) {
-    /*
-    printf("Prueba checar que la cadena solo tenga del alfabeto\n");
-	if (ch_cad_EnAlfa(alfabeto, cadena_usuario)) {
-		printf("\tPASS - todos pertenecen al alfabeto\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-	printf("\n");
-
-	printf("Prueba checar que primer elemento sea numero\n");
-	if (ch_cad_primEsDig(cadena_usuario)) {
-		printf("\tPASS - primer elemento es numero\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("\n");
-
-	printf("Prueba checar que contenga iniciales\n");
-	if (ch_cad_iniciales(cadena_usuario, inciales)) {
-		printf("\tPASS - contiene inciales\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("Prueba checar puntos no consecutivos\n");
-	if (ch_cad_ptsNoConsecu(cadena_usuario)) {
-		printf("\tPASS - no contiene puntos consecutivos\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    printf("Prueba checar punto y matricula final\n");
-	if (ch_cad_ptoYmatric(matricula, cadena_usuario)) {
-		printf("\tPASS - tiene .matricula\n");
-	}
-	else{
-		printf("\tNO\n");
-	}
-
-    */
-    if (ch_cad_EnAlfa(alfabeto, cadena_usuario) && ch_cad_primEsDig(cadena_usuario) &&
-        ch_cad_iniciales(cadena_usuario, inciales) && ch_cad_ptsNoConsecu(cadena_usuario) && ch_cad_ptoYmatric(matricula, cadena_usuario)) {
+bool
+procesarCadena(NODO **alfabeto, NODO **cadena_usuario, NODO** inciales, const char* matricula) {
+    if (ch_cad_EnAlfa(alfabeto, cadena_usuario) &&
+            ch_cad_primEsDig(cadena_usuario) &&
+                ch_cad_iniciales(cadena_usuario, inciales) &&
+                    ch_cad_ptsNoConsecu(cadena_usuario) &&
+                        ch_cad_ptoYmatric(matricula, cadena_usuario)) {
             return true;
     }
     else {
