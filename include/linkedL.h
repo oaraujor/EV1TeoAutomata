@@ -16,6 +16,8 @@ void printCadena(NODO** );
 bool buscarEnCadena(NODO **, char );
 void deshacerCadena(NODO **);
 size_t tamanoCadena(NODO **);
+void voltearCadena(NODO **);
+
 
 //agrega NODO * a la cadena (NODO * - lista encadenanda) 
 void agregarACadena(NODO **cadena , char letra) {
@@ -96,6 +98,21 @@ size_t tamanoCadena(NODO **cadena) {
         actual = actual->sig_letra;
     }
     return conteo;
+}
+
+void voltearCadena(NODO **cadena) {
+    NODO *prev, *actual, *sig;
+
+    prev = NULL;
+    actual = *cadena;
+    
+    while (actual != NULL) {
+        sig = actual->sig_letra;
+        actual->sig_letra = prev;
+        prev = actual;
+        actual = sig;
+    }
+    *cadena = prev;
 }
 
 #endif
