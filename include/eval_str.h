@@ -5,7 +5,7 @@
 #include <string.h>
 #include <ctype.h>
 
-#include "listasEncadenadas.h"
+#include "linkedL.h"
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")

@@ -26,4 +26,7 @@ clean:
 run: all
 	$(TARGET)
 
+safety:
+	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all $(TARGET)
+
 .PHONY: all clean run
