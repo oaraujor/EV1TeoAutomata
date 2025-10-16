@@ -5,68 +5,68 @@
 #include <stdlib.h>
 #include <stdio.h>
 
-//NODO para las listas encadenandas
 typedef struct _nodo {
     char letra;
     struct _nodo *sig_letra;
 } NODO;
 
-void agregarACadena(NODO ** , char );
-void printCadena(NODO** );
-bool buscarEnCadena(NODO **, char );
-void deshacerCadena(NODO **);
-size_t tamanoCadena(NODO **);
-void voltearCadena(NODO **);
+void agregar_a_LST(NODO **, char );
+void imprimir_LST(NODO** );
+bool buscar_en_LST(NODO **, char );
+void liberar_LST(NODO **);
+size_t tamano_LST(NODO **);
+void invertir_LST(NODO **);
 
-
-//agrega NODO * a la cadena (NODO * - lista encadenanda) 
-void agregarACadena(NODO **cadena , char letra) {
-    NODO *newNODE, *prevNODE, *currNODE;
-    newNODE = (NODO *)malloc(sizeof(NODO));
-    if(newNODE != NULL) {
-        newNODE->letra = letra;
-        newNODE->sig_letra = NULL;
-        prevNODE = NULL;
-        currNODE = *cadena;
-        while(currNODE != NULL) {
-            prevNODE = currNODE;
-            currNODE = currNODE->sig_letra;
+void
+agregar_a_LST(NODO **inicio_LST , char letra) {
+    NODO *nuevoNodo, *prevNodo, *actualNodo;
+    
+    nuevoNodo = (NODO *)malloc(sizeof(NODO));
+    if(nuevoNodo != NULL) {
+        nuevoNodo->letra = letra;
+        nuevoNodo->sig_letra = NULL;
+        prevNodo = NULL;
+        actualNodo = *inicio_LST;
+        while(actualNodo != NULL) {
+            prevNodo = actualNodo;
+            actualNodo = actualNodo->sig_letra;
         }
-        if (prevNODE == NULL) {
-            *cadena = newNODE;
+        if (prevNodo == NULL) {
+            *inicio_LST = nuevoNodo;
         }
         else {
-            prevNODE->sig_letra = newNODE;
+            prevNodo->sig_letra = nuevoNodo;
         }
     }
 }
 
-//imprime la cadena (NODO * - lista encadenanda) 
-void printCadena(NODO** cadena) {
-    NODO *curr;
-    curr = *cadena;
-    int i = 0;
-    while(curr != NULL) {
-        printf("%c", curr->letra);
-        curr = curr->sig_letra;
-        i++;
+void
+imprimir_LST(NODO** inicio_LST) {
+    NODO *actual;
+
+    actual = *inicio_LST;
+    while(actual != NULL) {
+        printf("%c", actual->letra);
+        actual = actual->sig_letra;
     }
     printf("\n");
 }
 
-//buscamos en la cadena (NODO * - lista encadenada) si valor se encuentra en cadena
-bool buscarEnCadena(NODO **cadena, char valorBuscar) {
-    NODO *curr;
-    bool encontrado = false;
+bool
+buscar_en_LST(NODO **inicio_LST, char valorBuscar) {
+    NODO *actualNodo;
+    bool encontrado;
 
-    if (cadena != NULL) {
-        curr = *cadena;
-        while (curr != NULL && encontrado == false) {
-            if (curr->letra == valorBuscar){
+    actualNodo = NULL;
+    encontrado = false;
+    if (inicio_LST != NULL) {
+        actualNodo = *inicio_LST;
+        while (actualNodo != NULL && encontrado == false) {
+            if (actualNodo->letra == valorBuscar){
                 encontrado = true;
             }
             else {
-                curr = curr->sig_letra;
+                actualNodo = actualNodo->sig_letra;
             }
         }
     }
@@ -76,43 +76,47 @@ bool buscarEnCadena(NODO **cadena, char valorBuscar) {
     return encontrado;
 }
 
-//colapsa/borra la cadena (NODO * - lista encadenanda) 
-void deshacerCadena(NODO **cadena) {
-    NODO *curr = NULL, *temp = NULL;
-    curr = *cadena;
-    while(curr != NULL) {
-        temp = curr->sig_letra;
-        free(curr);
-        curr = temp;
+void
+liberar_LST(NODO **inicio_LST) {
+    NODO *actualNodo, *tempNodo;
+
+    tempNodo = NULL;
+    actualNodo = *inicio_LST;
+    while(actualNodo != NULL) {
+        tempNodo = actualNodo->sig_letra;
+        free(actualNodo);
+        actualNodo = tempNodo;
     }
-    *cadena = NULL;
+    *inicio_LST = NULL;
 }
 
-size_t tamanoCadena(NODO **cadena) {
-    NODO * actual = NULL;
-    actual = *cadena;
-    size_t conteo = 0;
+size_t
+tamano_LST(NODO **inicio_LST) {
+    NODO * actualNodo = NULL;
+    size_t tamano;
 
-    while (actual != NULL) {
-        conteo++;
-        actual = actual->sig_letra;
+    tamano = 0;
+    actualNodo = *inicio_LST;
+    while (actualNodo != NULL) {
+        tamano++;
+        actualNodo = actualNodo->sig_letra;
     }
-    return conteo;
+    return tamano;
 }
 
-void voltearCadena(NODO **cadena) {
-    NODO *prev, *actual, *sig;
+void
+invertir_LST(NODO **inicio_LST) {
+    NODO *prevNodo, *actualNodo, *sigNodo;
 
-    prev = NULL;
-    actual = *cadena;
-    
-    while (actual != NULL) {
-        sig = actual->sig_letra;
-        actual->sig_letra = prev;
-        prev = actual;
-        actual = sig;
+    prevNodo = NULL;
+    actualNodo = *inicio_LST;
+    while (actualNodo != NULL) {
+        sigNodo = actualNodo->sig_letra;
+        actualNodo->sig_letra = prevNodo;
+        prevNodo = actualNodo;
+        actualNodo = sigNodo;
     }
-    *cadena = prev;
+    *inicio_LST = prevNodo;
 }
 
 #endif

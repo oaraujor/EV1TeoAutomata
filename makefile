@@ -20,19 +20,15 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 	$(CC) $(CFLAGS) -c $< -o $@
 
 clean:
-	@clear
 	$(RM) -rf $(BUILD_DIR)/*
 
 run: all
-	@clear
 	$(TARGET)
 
 memtest:
-	@clear
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all $(TARGET)
 
 debug:
-	@clear
 	gdb $(TARGET)
 
 .PHONY: all clean run memtest debug

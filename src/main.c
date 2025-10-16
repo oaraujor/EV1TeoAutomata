@@ -33,49 +33,54 @@
 
 bool continuarSiNO();
 
-int main() {
-	NODO *cadena_ingresada_usr;
-	NODO *gramatica_sigma;
-	NODO *gramatica_W;
-	NODO *gramatica_WI;
-	const char * charPtr_gramatica_j = "octavio";
-	const char * cadena_apellidos = "araujo rosales";
-	const char * charPtr_gramatica_i = "2173394";
+int
+main() {
+	NODO *LST_nombre = NULL;
+	NODO *LST_apellidos = NULL;
+	NODO *LST_matricula = NULL;
+	NODO *LST_cadena_usr = NULL;
+	NODO *LST_iniciales_W = NULL;
+	NODO *LST_iniciales_WI = NULL;
+	NODO *LST_sigma = NULL;
 
-	cadena_ingresada_usr = NULL; //cadena ingresada por el usuario como listas encadenadas
-	gramatica_sigma = NULL; //gramatica_sigma como listas encadenadas
-	gramatica_W = NULL; //iniciales como listas encadenadas
-	gramatica_WI = NULL; //iniciales como listas encadenadas
-	
-	crearAlfabeto(&gramatica_sigma, charPtr_gramatica_j);
-	crearAlfabeto(&gramatica_sigma, cadena_apellidos);
-	crearAlfabeto(&gramatica_sigma, charPtr_gramatica_i);
-	crearIniciales(cadena_apellidos, &gramatica_W);
-	crearIniciales(cadena_apellidos, &gramatica_WI);
-	voltearCadena(&gramatica_WI);
+	const char *str_nombre = "octavio";
+	const char *str_apellidos = "araujo rosales";
+	const char *str_matricula = "2173394";
+
+	LST_crear_sigma(&LST_sigma, str_nombre);
+	LST_crear_sigma(&LST_sigma, str_apellidos);
+	LST_crear_sigma(&LST_sigma, str_matricula);
+
+	str_a_LST(&LST_nombre, str_nombre);
+	str_a_LST(&LST_apellidos, str_apellidos);
+	str_a_LST(&LST_matricula, str_matricula);
+	crearIniciales(str_apellidos, &LST_iniciales_W);
+	crearIniciales(str_apellidos, &LST_iniciales_WI);
+	invertir_LST(&LST_iniciales_WI);
 	
 	do {
 		LIMPIAR_PANTALLA;
-		printf("Nombre: %s ", charPtr_gramatica_j);
-		printf("%s\n", cadena_apellidos);
-		printf("Matricula: %s\n\n", charPtr_gramatica_i);
-		printAlfabeto(&gramatica_sigma);
+		printf("Nombre: ");
+		imprimir_LST(&LST_nombre);
+		printf("Apellido: ");
+		imprimir_LST(&LST_apellidos);
+		printf("Matricula: ");
+		imprimir_LST(&LST_matricula);
 		
+		printf("i = ");
+		imprimir_LST(&LST_matricula);
 		printf("w = ");
-		printCadena(&gramatica_W);
-		
-		printf("i = %s\n", charPtr_gramatica_i);
-		
+		imprimir_LST(&LST_iniciales_W);
 		printf("w^I = ");
-		printCadena(&gramatica_WI);
+		imprimir_LST(&LST_iniciales_WI);
+		printf("j = ");
+		imprimir_LST(&LST_nombre);
 		
-		printf("j = %s\n", cadena_apellidos);
-
 		printf("\n");
-		leer_cadena_usr("Cadena a analizar: ", &cadena_ingresada_usr); //la cadena a analizar es una linked list
+		leer_cadena_usr("Cadena a analizar: ", &LST_cadena_usr); //la cadena a analizar es una linked list
 		printf("\n\n");
 		
-		if(procesarCadena(&gramatica_sigma, &cadena_ingresada_usr, &gramatica_W, charPtr_gramatica_i)) {
+		if(procesarCadena(&LST_cadena_usr, &LST_matricula, &LST_iniciales_W, &LST_iniciales_WI, &LST_nombre, &LST_sigma)) {
 			printf(GREEN"Cadena Valida!\n"NORMAL);
 		}
 		else {
@@ -84,13 +89,17 @@ int main() {
 
 	}while(continuarSiNO());
 
-	deshacerCadena(&cadena_ingresada_usr);
-	deshacerCadena(&gramatica_sigma);
-	deshacerCadena(&gramatica_W);
+	liberar_LST(&LST_nombre);
+	liberar_LST(&LST_apellidos);
+	liberar_LST(&LST_matricula);
+	liberar_LST(&LST_cadena_usr);
+	liberar_LST(&LST_iniciales_W);
+	liberar_LST(&LST_iniciales_WI);
 	return 0;
 }
 
-bool continuarSiNO() {
+bool
+continuarSiNO() {
     char si_no;
 
     while (true) {
