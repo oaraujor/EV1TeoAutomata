@@ -21,12 +21,14 @@ $(BUILD_DIR)/%.o: $(SRC_DIR)/%.c
 
 clean:
 	$(RM) -rf $(BUILD_DIR)/*
-	clear
 
 run: all
 	$(TARGET)
 
-safety:
+memtest:
 	valgrind --leak-check=full --track-origins=yes --show-leak-kinds=all $(TARGET)
 
-.PHONY: all clean run
+debug:
+	gdb $(TARGET)
+
+.PHONY: all clean run memtest debug
