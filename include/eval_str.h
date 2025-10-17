@@ -17,8 +17,11 @@ void leer_cadena_usr(const char *, NODO **);
 void str_a_LST(NODO **, const char *);
 bool checar_LST_enAlfabeto(NODO **, NODO **);
 void crearIniciales(const char *, NODO **);
-bool procesarCadena(NODO **, NODO **, NODO**, NODO **, NODO **, NODO **);
+bool evaluar_gramatica(NODO **, NODO **, NODO**, NODO **, NODO **, NODO **);
 void LST_crear_sigma(NODO **, const char *);
+
+bool compararPatron_y_continuar(NODO **, NODO **);
+int contar_repeticiones_n(NODO **, NODO **);
 
 void
 leer_cadena_usr(const char *msg, NODO **cadena) {
@@ -106,16 +109,131 @@ LST_crear_sigma(NODO **LST_sigma, const char *str_a_convertir) {
     
 }
 
+/*
+    Procesador de la gramática:
+        L = { i (w)^n i (w^I)^(2n) j^2 }
+    Donde:
+        i: lista completa de matricula (NODO **LST_matricula_i)
+        w: lista de iniciales (NODO **LST_iniciales_w)
+        w^I: lista reversa de iniciales (NODO** LST_rev_iniciales_wi)
+        j: lista completa del nombre (NODO ** LST_nombre_j)
+    La funcion:
+        checa alfabeto
+        verificar i al inicio
+        contar n >= 1 repeticiones consecutivas de w
+        verificar i de nuevo
+        verificar que haya exactamente 2*n repeticiones de w^I
+        verificar j dos veces
+        la cadena debe terminar exactamente al finalizar la segunda j
+*/
 bool
-procesarCadena(NODO **LST_cadena_usr, NODO **LST_matricula_i, NODO **LST_iniciales_w, NODO** LST_rev_iniciales_wi, NODO ** LST_nombre_j, NODO **LST_alfabeto) {
+evaluar_gramatica(NODO **LST_cadena_usr, NODO **LST_matricula_i, NODO **LST_iniciales_w, NODO** LST_rev_iniciales_wi, NODO ** LST_nombre_j, NODO **LST_alfabeto) {
+    NODO *patron_i;
+    NODO *patron_w;
+    NODO *patron_wi;
+    NODO *patron_j;
+    NODO *cursor;
+    bool LST_aceptado;
+    int k;
     
-    if (checar_LST_enAlfabeto(LST_alfabeto, LST_cadena_usr) == false) {
+    patron_i = *LST_matricula_i;
+    patron_w = *LST_iniciales_w;
+    patron_wi = *LST_rev_iniciales_wi;
+    patron_j = *LST_nombre_j;
+    cursor = *LST_cadena_usr;
+
+    if (patron_i != NULL && patron_j != NULL && patron_wi != NULL && patron_w && cursor != NULL) {
+        
+        if (checar_LST_enAlfabeto(LST_alfabeto, LST_cadena_usr) == false) {
+            return false;
+        }
+        /*i al inicio */
+        if (!compararPatron_y_continuar(&cursor, &patron_i)) {
+            return false;
+        }
+    
+        /*(w)^n con n >= 1 */
+        int n = contar_repeticiones_n(&cursor, &patron_w);
+        if (n < 1) {
+            return false;
+        }
+    
+        /*i otra vez */
+        if (!compararPatron_y_continuar(&cursor, &patron_i)) {
+            return false;
+        }
+    
+        /*(w^I)^(2n) */
+        k = 0;
+        for (k = 0; k < 2 * n; ++k) {
+            if (!compararPatron_y_continuar(&cursor, &patron_wi)) {
+                return false;
+            }
+        }
+    
+        /*j^2 => j dos veces consecutivas */
+        if (!compararPatron_y_continuar(&cursor, &patron_j)) {
+            return false;
+        }
+        if (!compararPatron_y_continuar(&cursor, &patron_j)) {
+            return false;
+        }
+    
+        /*la cadena debe terminar exactamente aquí */
+        if (cursor != NULL) {
+            return false;
+        }
+        LST_aceptado = true;
+    }
+    else {
+        return false;
+    }
+}
+
+
+bool
+compararPatron_y_continuar(NODO **LST_cursor, NODO **LST_patron) {
+    NODO *orig;
+    NODO *p;
+    NODO *cursor_temp;
+
+    orig = *LST_cursor;
+    p = *LST_patron;
+    cursor_temp = *LST_cursor;
+
+    if (orig != NULL && p != NULL && cursor_temp != NULL) {
+        while (p != NULL && cursor_temp != NULL) {
+            if (p->letra != cursor_temp->letra) {
+                *LST_cursor = orig;
+                return false;
+            }
+            p = p->sig_letra;
+            cursor_temp = cursor_temp->sig_letra;
+        }
+        if (p == NULL) {
+            *LST_cursor = cursor_temp;
+            return true;
+        }
+        *LST_cursor = orig;
         return false;
     }
     else {
-        return true;
+        return false;
     }
-    
+}
+
+int
+contar_repeticiones_n(NODO **cursor, NODO **pattern) {
+    int n = 0;
+    if (*cursor != NULL && *pattern != NULL) {
+        while (compararPatron_y_continuar(cursor, pattern)) {
+            n++;
+        }
+        return n;
+    }
+    else {
+        return 0;
+    }
 }
 
 
