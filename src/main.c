@@ -77,10 +77,13 @@ main() {
 		imprimir_LST(&LST_nombre);
 		
 		printf("\n");
-		leer_cadena_usr("Cadena a analizar: ", &LST_cadena_usr); //la cadena a analizar es una linked list
-		printf("\n\n");
+		leer_cadena_usr("Cadena a analizar: ", &LST_cadena_usr);
 		
-		if(procesarCadena(&LST_cadena_usr, &LST_matricula, &LST_iniciales_W, &LST_iniciales_WI, &LST_nombre, &LST_sigma)) {
+		LIMPIAR_PANTALLA;
+		printf("Cadena Ingresada: ");
+		imprimir_LST(&LST_cadena_usr);
+
+		if(evaluar_gramatica(&LST_cadena_usr, &LST_matricula, &LST_iniciales_W, &LST_iniciales_WI, &LST_nombre, &LST_sigma)) {
 			printf(GREEN"Cadena Valida!\n"NORMAL);
 		}
 		else {
@@ -89,6 +92,10 @@ main() {
 
 	}while(continuarSiNO());
 
+	LIMPIAR_PANTALLA;
+	printf("Saliendo del programa...\n");
+
+	liberar_LST(&LST_sigma);
 	liberar_LST(&LST_nombre);
 	liberar_LST(&LST_apellidos);
 	liberar_LST(&LST_matricula);
@@ -106,7 +113,7 @@ continuarSiNO() {
         printf("Continuar? (s/n): ");
         
         si_no = getchar();
-        while (getchar() != '\n'); // clear input buffer
+        while (getchar() != '\n');
 
         switch (si_no) {
             case 's':
