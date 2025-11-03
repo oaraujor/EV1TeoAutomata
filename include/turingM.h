@@ -4,6 +4,7 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
+#include <unistd.h>
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
@@ -15,19 +16,19 @@
 #define TCN "\033[0m"
 #define TCV "\033[0;32m"
 #define TCR "\033[0;31m"
+#define TCA "\033[0;33m"
 
 typedef enum _dir {
     L = -1,
-    S,
+    HALT,
     R
 } Dir;
 
 typedef struct _instruc{
-    // (
-    int q_Actual;
-    char letraEval;
-    // ) = (
-    int q_Sig;
+    int num_estado;
+    char letra_esperada;
+
+    int ir_nuevoEstado;
     char charAescribir;
     Dir movimiento;
     // )        
@@ -48,7 +49,11 @@ void _agreg_cadena(CADENA **, char );
 void _impr_cadena(CADENA **);
 void _free_cadena(CADENA **);
 
-bool exe_turing(CADENA**);
+
+static Instruc * __buscar_instrucc(int, char, Instruc *, int);
+static void __mover_cabezal (NODO** , Dir);
+
+bool exe_turing(CADENA**, Instruc *, int);
 
 void
 _agreg_cadena(CADENA **usr_cadena , char letra) {
@@ -84,7 +89,7 @@ _impr_cadena(CADENA** cadena) {
     temp_cadena = *cadena;
     printf("[");
     while(temp_cadena != NULL) {
-        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '_' : temp_cadena->letra);
+        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '#' : temp_cadena->letra);
         temp_cadena = temp_cadena->sig_letra;
     }
     printf("]\n");
@@ -119,8 +124,82 @@ leer_cinta(CADENA **cinta) {
     //} while(*cinta == NULL);
 }
 
-bool exe_turing(CADENA** cadena_usr) {
+bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
+    NODO *cabezal = NULL;
+    Instruc *curr_Instruct;
+    int estadoActual = 0;
+    bool es_HALT;
+    
+    cabezal = *cadena_usr;
+
+    es_HALT = false;
+    while (!es_HALT) {
+        LIMPIAR_PANTALLA;
+        _impr_cadena(cadena_usr);
+        printf("\nq_%d\n", estadoActual);
+
+        curr_Instruct = __buscar_instrucc(estadoActual, cabezal->letra, r_trans, tamano_instruc);
+
+        if (curr_Instruct == NULL) {
+            cabezal->t_color = TCR;
+            LIMPIAR_PANTALLA;
+            _impr_cadena(cadena_usr);
+            return false;
+        }
+        
+        cabezal->letra = curr_Instruct->charAescribir;
+        cabezal->t_color = TCA;
+        LIMPIAR_PANTALLA;
+        _impr_cadena(cadena_usr);
+        estadoActual = curr_Instruct->ir_nuevoEstado;
+
+        if (curr_Instruct->movimiento == HALT) {
+            cabezal->t_color = TCV;
+            LIMPIAR_PANTALLA;
+            _impr_cadena(cadena_usr);
+            es_HALT = true;
+            printf(TCV"Máquina detenida correctamente en estado %d\n"TCN, estadoActual);
+
+        }
+        else {
+            __mover_cabezal(&cabezal, curr_Instruct->movimiento);
+        }
+        usleep(200000);
+    }
     return true;
+}
+
+static Instruc *
+__buscar_instrucc(int estadoActual, char letra_cabezal, Instruc * reglas_trans, int tamano_reglas_t) {
+    int i;
+
+    i = 0;
+    for (i = 0; i < tamano_reglas_t; i++) {
+        if (((reglas_trans + i)->num_estado == estadoActual) && ((reglas_trans + i)->letra_esperada  == letra_cabezal)) {
+            return (reglas_trans + i);
+        }
+    }
+    return NULL;
+}
+
+static void
+__mover_cabezal (NODO** cabezal, Dir movimiento) {
+    switch (movimiento) {
+        case L:
+            if((*cabezal)->prev_letra != NULL) {
+                (*cabezal)->t_color = TCV;
+                (*cabezal) = (*cabezal)->prev_letra;
+            }
+            break;
+        case R:
+            if((*cabezal)->sig_letra != NULL) {
+                (*cabezal)->t_color = TCV;
+                (*cabezal) = (*cabezal)->sig_letra;
+            }
+            break;
+        case HALT:
+            break;
+    }
 }
 
 #endif

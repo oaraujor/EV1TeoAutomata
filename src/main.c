@@ -16,6 +16,18 @@ bool continuarSiNO();
 int
 main() {
 	NODO *LST_cadena_usr = NULL;
+	int tamanoInstruc;
+	//here i just want to do a simple traversal unitl the end
+	Instruc reglas_trans[] = {
+		{0, BLN, 1, BLN, R},
+		{1, 'a', 1, BLN , R},
+		{1, 'b', 1, BLN , R},	
+		{1, 'c', 1, BLN , R},
+		{1, BLN, 2, BLN ,HALT},
+	};
+
+		tamanoInstruc = sizeof(reglas_trans) / sizeof(Instruc);
+
 
 	do {
 		LIMPIAR_PANTALLA;
@@ -26,7 +38,7 @@ main() {
 		printf("Cadena Ingresada: ");
 		_impr_cadena(&LST_cadena_usr);
 
-		if(exe_turing(&LST_cadena_usr)) {
+		if(exe_turing(&LST_cadena_usr, reglas_trans, tamanoInstruc)) {
 			printf(TCV"Cadena Valida!\n"TCN);
 		}
 		else {
