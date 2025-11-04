@@ -4,19 +4,23 @@
 #include <stdbool.h>
 #include <stdlib.h>
 #include <stdio.h>
-#include <unistd.h>
 
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
+    #include <windows.h>
+    #define PAUSA_V sleep(600)
+    #
 #else
 	#define LIMPIAR_PANTALLA system("clear")
+    #include <unistd.h>
+    #define PAUSA_V usleep(200000)
 #endif
 
 #define BLN '\0'
 #define TCN "\033[0m"
 #define TCV "\033[0;32m"
 #define TCR "\033[0;31m"
-#define TCA "\033[0;33m"
+#define TCA "\033[4;33m"
 
 typedef enum _dir {
     L = -1,
@@ -27,11 +31,9 @@ typedef enum _dir {
 typedef struct _instruc{
     int num_estado;
     char letra_esperada;
-
     int ir_nuevoEstado;
     char charAescribir;
     Dir movimiento;
-    // )        
 } Instruc;
 
 
@@ -63,13 +65,11 @@ _agreg_cadena(CADENA **usr_cadena , char letra) {
     
     nuevoNodo = (NODO *)malloc(sizeof(NODO));
     if(nuevoNodo != NULL) {
-        //init de nuevoNodo
         nuevoNodo->letra = letra;
         nuevoNodo->t_color = TCN; 
         nuevoNodo->sig_letra = NULL;
         nuevoNodo->prev_letra = NULL;
         
-        //
         tempNodo = *usr_cadena;
         if(tempNodo != NULL) {
             while (tempNodo->sig_letra != NULL) {
@@ -124,7 +124,8 @@ leer_cinta(CADENA **cinta) {
     _agreg_cadena(cinta, BLN);
 }
 
-bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
+bool
+exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
     NODO *cabezal = NULL;
     Instruc *curr_Instruct;
     int estadoActual = 0;
@@ -144,7 +145,7 @@ bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
         
         cabezal->letra = curr_Instruct->charAescribir;
         cabezal->t_color = TCA;
-        usleep(600000);
+        PAUSA_V;
         LIMPIAR_PANTALLA;
         printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
                     curr_Instruct->num_estado,
@@ -163,7 +164,7 @@ bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
         else {
             __mover_cabezal(&cabezal, curr_Instruct->movimiento);
         }
-        usleep(600000);
+        PAUSA_V;
         LIMPIAR_PANTALLA;
         printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
                     curr_Instruct->num_estado,
