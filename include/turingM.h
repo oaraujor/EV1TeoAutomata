@@ -42,6 +42,8 @@ typedef struct _nodo {
     struct _nodo *prev_letra;
 } NODO;
 
+static char mov[3] = {'L','S','R'};
+
 typedef struct _nodo CADENA;
         
 void leer_cinta(NODO **);
@@ -89,7 +91,7 @@ _impr_cadena(CADENA** cadena) {
     temp_cadena = *cadena;
     printf("[");
     while(temp_cadena != NULL) {
-        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '#' : temp_cadena->letra);
+        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '-' : temp_cadena->letra);
         temp_cadena = temp_cadena->sig_letra;
     }
     printf("]\n");
@@ -113,7 +115,6 @@ void
 leer_cinta(CADENA **cinta) {
     char c;
 
-    //do {
     _free_cadena(cinta);
     _agreg_cadena(cinta, BLN);
     printf("Ingrese la cadena: ");
@@ -121,7 +122,6 @@ leer_cinta(CADENA **cinta) {
         _agreg_cadena(cinta, c);
     }
     _agreg_cadena(cinta, BLN);
-    //} while(*cinta == NULL);
 }
 
 bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
@@ -134,12 +134,7 @@ bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
 
     es_HALT = false;
     while (!es_HALT) {
-        LIMPIAR_PANTALLA;
-        _impr_cadena(cadena_usr);
-        printf("\nq_%d\n", estadoActual);
-
         curr_Instruct = __buscar_instrucc(estadoActual, cabezal->letra, r_trans, tamano_instruc);
-
         if (curr_Instruct == NULL) {
             cabezal->t_color = TCR;
             LIMPIAR_PANTALLA;
@@ -149,22 +144,34 @@ bool exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
         
         cabezal->letra = curr_Instruct->charAescribir;
         cabezal->t_color = TCA;
+        usleep(600000);
         LIMPIAR_PANTALLA;
+        printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
+                    curr_Instruct->num_estado,
+                        curr_Instruct->letra_esperada,
+                                curr_Instruct->ir_nuevoEstado,
+                                    curr_Instruct->charAescribir,
+                                        mov[curr_Instruct->movimiento + 1]);
         _impr_cadena(cadena_usr);
         estadoActual = curr_Instruct->ir_nuevoEstado;
 
         if (curr_Instruct->movimiento == HALT) {
             cabezal->t_color = TCV;
-            LIMPIAR_PANTALLA;
-            _impr_cadena(cadena_usr);
             es_HALT = true;
-            printf(TCV"Máquina detenida correctamente en estado %d\n"TCN, estadoActual);
 
         }
         else {
             __mover_cabezal(&cabezal, curr_Instruct->movimiento);
         }
-        usleep(200000);
+        usleep(600000);
+        LIMPIAR_PANTALLA;
+        printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
+                    curr_Instruct->num_estado,
+                        curr_Instruct->letra_esperada,
+                                curr_Instruct->ir_nuevoEstado,
+                                    curr_Instruct->charAescribir,
+                                        mov[curr_Instruct->movimiento + 1]);
+        _impr_cadena(cadena_usr);
     }
     return true;
 }
@@ -184,16 +191,22 @@ __buscar_instrucc(int estadoActual, char letra_cabezal, Instruc * reglas_trans, 
 
 static void
 __mover_cabezal (NODO** cabezal, Dir movimiento) {
+
+    if ((*cabezal)->letra == BLN) {
+        (*cabezal)->t_color = TCV;
+    }
+    else {
+        (*cabezal)->t_color = TCN;
+
+    }
     switch (movimiento) {
         case L:
             if((*cabezal)->prev_letra != NULL) {
-                (*cabezal)->t_color = TCV;
                 (*cabezal) = (*cabezal)->prev_letra;
             }
             break;
         case R:
             if((*cabezal)->sig_letra != NULL) {
-                (*cabezal)->t_color = TCV;
                 (*cabezal) = (*cabezal)->sig_letra;
             }
             break;
