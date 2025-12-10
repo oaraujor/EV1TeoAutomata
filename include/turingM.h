@@ -8,8 +8,7 @@
 #ifdef __WIN32
 	#define LIMPIAR_PANTALLA system("cls")
     #include <windows.h>
-    #define PAUSA_V sleep(600)
-    #
+    #define PAUSA_V Sleep(200)
 #else
 	#define LIMPIAR_PANTALLA system("clear")
     #include <unistd.h>
@@ -89,12 +88,12 @@ _impr_cadena(CADENA** cadena) {
     CADENA *temp_cadena;
 
     temp_cadena = *cadena;
-    printf("[");
+    //printf("[");
     while(temp_cadena != NULL) {
-        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '-' : temp_cadena->letra);
+        printf("|%s%c"TCN, temp_cadena->t_color ,temp_cadena->letra == BLN ? '_' : temp_cadena->letra);
         temp_cadena = temp_cadena->sig_letra;
     }
-    printf("]\n");
+    printf("|\n");
 }
 
 void
@@ -147,12 +146,13 @@ exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
         cabezal->t_color = TCA;
         PAUSA_V;
         LIMPIAR_PANTALLA;
-        printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
+        printf("(q%d, %c) = (q%d, %c, %c) | Estado: %d | Cabezal: %c |\n",
                     curr_Instruct->num_estado,
                         curr_Instruct->letra_esperada,
                                 curr_Instruct->ir_nuevoEstado,
                                     curr_Instruct->charAescribir,
-                                        mov[curr_Instruct->movimiento + 1]);
+                                        mov[curr_Instruct->movimiento + 1],
+                                                        estadoActual, cabezal->letra);
         _impr_cadena(cadena_usr);
         estadoActual = curr_Instruct->ir_nuevoEstado;
 
@@ -166,12 +166,13 @@ exe_turing(CADENA** cadena_usr, Instruc *r_trans, int tamano_instruc) {
         }
         PAUSA_V;
         LIMPIAR_PANTALLA;
-        printf("o(q_%d, %c) = o(q_%d, %c, %c) \n",
+        printf("(q%d, %c) = (q%d, %c, %c) | Estado: %d | Cabezal: %c |\n",
                     curr_Instruct->num_estado,
                         curr_Instruct->letra_esperada,
                                 curr_Instruct->ir_nuevoEstado,
                                     curr_Instruct->charAescribir,
-                                        mov[curr_Instruct->movimiento + 1]);
+                                        mov[curr_Instruct->movimiento + 1],
+                                                        estadoActual, cabezal->letra);
         _impr_cadena(cadena_usr);
     }
     return true;
